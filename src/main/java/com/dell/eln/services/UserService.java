@@ -1,11 +1,13 @@
 package com.dell.eln.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dell.eln.entities.User;
+import com.dell.eln.exceptions.UserNotFoundException;
 import com.dell.eln.repos.UserRepository;
 
 @Service
@@ -22,8 +24,12 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	public User getUser(Long id) {
-		return userRepository.findById(id).get(); 
+	public Optional<User> getUser(Long id) throws UserNotFoundException{
+		Optional<User> user = userRepository.findById(id);
+		if(user.isEmpty()) {
+			throw new UserNotFoundException("User Not Found in the repo"); 
+		}
+		return user; 
 	}
 	
 	public User getUserByUsername(String username) {
